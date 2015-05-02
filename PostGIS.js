@@ -79,12 +79,7 @@ PostGISSource.prototype = {
       var start, query;
         
       start = Date.now();
-      if (this._attrFields) {
-        query = "SELECT ST_AsGeoJson("+this._geomField+") as geometry, "+this._attrFields+" FROM "+this._tableName+" WHERE "+this._geomField+" && ST_MakeEnvelope($1,$2,$3,$4);";
-      }
-      else {
-        query = "SELECT ST_AsGeoJson("+this._geomField+") as geometry,* FROM "+this._tableName+" WHERE "+this._geomField+" && ST_MakeEnvelope($1,$2,$3,$4);";
-      }
+      query = "SELECT ST_AsGeoJson("+this._geomField+") as geometry, "+(this._attrFields || "*") +" FROM "+this._tableName+" WHERE "+this._geomField+" && ST_MakeEnvelope($1,$2,$3,$4);";
       // console.log("Querying... "+query+" "+min+", "+max);
       client.query(query, [min[0], min[1], max[0], max[1]], function(err, result) {
         if (err) { return callback(err, null); }
